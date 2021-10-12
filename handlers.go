@@ -44,6 +44,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	tempFile.Write(fileBytes)
 	// return that we have successfully uploaded our file!
 	fmt.Fprintf(w, "Successfully Uploaded File\n")
-	ch, q := initRabbit()
-	rabbit(ch, q, "Some ID was sent")
+
+	initRabbit()
+
 }

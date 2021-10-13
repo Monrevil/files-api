@@ -26,14 +26,6 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("File Size: %+v\n", handler.Size)
 	fmt.Printf("MIME Header: %+v\n", handler.Header)
 
-	// Create a temporary file within our temp-images directory that follows
-	// a particular naming pattern
-	tempFile, err := ioutil.TempFile("temp-images", "file-*.png")
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer tempFile.Close()
-
 	// read all of the contents of our uploaded file into a
 	// byte array
 	fileBytes, err := ioutil.ReadAll(file)
@@ -41,10 +33,21 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	// write this byte array to our temporary file
-	tempFile.Write(fileBytes)
+	saveFile(fileBytes)
 	// return that we have successfully uploaded our file!
 	fmt.Fprintf(w, "Successfully Uploaded File\n")
 
 	initRabbit()
 
+}
+
+// Create a temporary file within our temp-images directory that follows
+// a particular naming pattern
+func saveFile(file []byte) {
+	tempFile, err := ioutil.TempFile("temp-images", "file-*.png")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer tempFile.Close()
+	tempFile.Write(file)
 }

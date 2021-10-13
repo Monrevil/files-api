@@ -4,7 +4,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-func initRabbit() {
+func initRabbit(path string) {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -22,7 +22,7 @@ func initRabbit() {
 		nil,     // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
-	rabbit(ch, q, "hello rabbit")
+	rabbit(ch, q, path)
 }
 
 func rabbit(ch *amqp.Channel, q amqp.Queue, id string) {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"path/filepath"
 )
 
 func uploadFile(w http.ResponseWriter, r *http.Request) {
@@ -33,21 +34,27 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	// write this byte array to our temporary file
-	saveFile(fileBytes)
+	path := saveFile(fileBytes)
 	// return that we have successfully uploaded our file!
 	fmt.Fprintf(w, "Successfully Uploaded File\n")
 
-	initRabbit()
+	initRabbit(path)
 
 }
 
 // Create a temporary file within our temp-images directory that follows
 // a particular naming pattern
-func saveFile(file []byte) {
+func saveFile(file []byte) string {
 	tempFile, err := ioutil.TempFile("temp-images", "file-*.png")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer tempFile.Close()
 	tempFile.Write(file)
+
+	abs, err := filepath.Abs(tempFile.Name())
+	if err != nil {
+		fmt.Println("Could not get absolute filepath:", err)
+	}
+	return abs
 }
